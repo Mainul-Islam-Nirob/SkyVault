@@ -10,5 +10,12 @@
 </head>
 <body class="bg-gradient-to-br from-indigo-500 to-purple-600 h-screen flex items-center justify-center">
   <h1 class="text-white text-4xl font-bold">☁️ Welcome to SkyVault</h1>
+  <h1>Welcome to SkyVault</h1>
+<% if (user) { %>
+  <a href="/dashboard">Dashboard</a>
+<% } else { %>
+  <a href="/login">Login</a> | <a href="/register">Register</a>
+<% } %>
+
 </body>
 </html>
