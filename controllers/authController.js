@@ -3,12 +3,12 @@ const bcrypt = require('bcrypt');
 const prisma = new PrismaClient();
 
 exports.registerUser = async (req, res) => {
-  const { email, password } = req.body;
+  const { name, email, password } = req.body;
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) return res.send('User already exists');
 
   const hashed = await bcrypt.hash(password, 10);
-  await prisma.user.create({ data: { email, password: hashed } });
+  await prisma.user.create({ data: { name, email, password: hashed } });
 
   res.redirect('/login');
 };

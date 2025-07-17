@@ -1,0 +1,15 @@
+<nav class="bg-cosmicNavy/90 backdrop-blur-md shadow-glow sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <a href="/" class="text-neonTeal text-3xl font-extrabold tracking-wide hover:text-moonlightGray transition">SkyVault</a>
+    <div class="space-x-6 text-moonlightGray text-lg font-medium">
+      <% if (user) { %>
+        <a href="/dashboard" class="hover:text-neonTeal transition">Dashboard</a>
+        <a href="/upload" class="hover:text-neonTeal transition">Upload</a>
+        <a href="/logout" class="hover:text-neonTeal transition">Logout</a>
+      <% } else { %>
+        <a href="/login" class="hover:text-neonTeal transition">Login</a>
+        <a href="/register" class="hover:text-neonTeal transition">Register</a>
+      <% } %>
+    </div>
+  </div>
+</nav>

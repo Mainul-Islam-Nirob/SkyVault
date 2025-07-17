@@ -1,21 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <link href="/css/output.css" rel="stylesheet">
-  <title>SkyVault</title>
-  <!-- views/partials/head.ejs -->
-<link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.css" rel="stylesheet">
+<% layout('layout') %>
 
-</head>
-<body class="bg-gradient-to-br from-indigo-500 to-purple-600 h-screen flex items-center justify-center">
-  <h1 class="text-white text-4xl font-bold">☁️ Welcome to SkyVault</h1>
-  <h1>Welcome to SkyVault</h1>
-<% if (user) { %>
-  <a href="/dashboard">Dashboard</a>
-<% } else { %>
-  <a href="/login">Login</a> | <a href="/register">Register</a>
-<% } %>
-
-</body>
-</html>
+<section class="flex-grow flex flex-col justify-center items-center text-center px-6 py-24 max-w-3xl mx-auto space-y-8">
+  <h1 class="text-6xl font-extrabold text-neonTeal drop-shadow-glow tracking-tight">
+    Welcome to SkyVault
+  </h1>
+  <p class="text-xl text-moonlightGray/80 max-w-xl">
+    Secure your files in the celestial vault — accessible anywhere, anytime.  
+    Experience cloud storage reimagined with elegance and power.
+  </p>
+  <% if (!user) { %>
+    <div class="space-x-6">
+      <a href="/register" class="inline-block px-8 py-3 rounded-full border-2 border-neonTeal text-neonTeal font-semibold hover:bg-neonTeal hover:text-cosmicNavy transition-shadow shadow-glow">
+        Get Started
+      </a>
+      <a href="/login" class="inline-block px-8 py-3 rounded-full bg-neonTeal text-cosmicNavy font-semibold hover:bg-teal-400 transition-shadow shadow-glow">
+        Login
+      </a>
+    </div>
+  <% } else { %>
+    <a href="/dashboard" class="inline-block px-10 py-4 rounded-full bg-neonTeal text-cosmicNavy font-bold text-lg hover:bg-teal-400 transition-shadow shadow-glow">
+      Go to Dashboard
+    </a>
+  <% } %>
+</section>

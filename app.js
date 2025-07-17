@@ -7,12 +7,21 @@ const { PrismaClient } = require('@prisma/client');
 const PrismaStore = require('@quixo3/prisma-session-store').PrismaSessionStore;
 const bcrypt = require('bcrypt');
 const path = require('path');
+const engine = require('ejs-mate');
+const setLocals = require('./middleware/setLocals');
+
+// ROUTES
+const authRoutes = require('./routes/auth');
+const dashboardRoutes = require('./routes/dashboard');
+
 
 const app = express();
 const prisma = new PrismaClient();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.engine('ejs', engine);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
@@ -31,6 +40,7 @@ app.use(session({
 // PASSPORT
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(setLocals);
 
 passport.serializeUser((user, done) => done(null, user.id));
 passport.deserializeUser(async (id, done) => {
@@ -48,22 +58,14 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, async (email, passwor
   return done(null, user);
 }));
 
-// MIDDLEWARE
-const isAuth = require('./middleware/isAuth');
-
-// ROUTES
-const authRoutes = require('./routes/auth');
-app.use(authRoutes);
-
 // PUBLIC PAGE
 app.get('/', (req, res) => {
   res.render('index', { user: req.user });
 });
 
-// DASHBOARD (Protected)
-app.get('/dashboard', isAuth, (req, res) => {
-  res.render('dashboard', { user: req.user });
-});
+// ROUTE SETUP
+app.use(authRoutes);
+app.use(dashboardRoutes); 
 
 // START
 app.listen(3000, () => {
