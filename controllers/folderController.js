@@ -128,37 +128,37 @@ exports.showFolderUploadForm = async (req, res) => {
 
 
 exports.uploadFile = async (req, res) => {
-  if (!req.file) {
-    console.error('❌ No file uploaded');
-    return res.status(400).send('No file uploaded.');
-  }
+  if (!req.file) return res.status(400).send('No file uploaded.');
 
-  const { originalname, size, path: filePath } = req.file;
+  const { originalname, size } = req.file;
+  const fileUrl = req.file.path;
 
   await prisma.file.create({
     data: {
       name: originalname,
       size: size,
-      url: `/uploads/${path.basename(filePath)}`,
+      url: fileUrl,
       userId: req.user.id
     }
   });
 
   res.redirect('/dashboard');
 };
+
 exports.uploadToFolder = async (req, res) => {
   const folderId = req.params.id;
   const folder = await prisma.folder.findUnique({ where: { id: folderId } });
 
   if (!folder || folder.userId !== req.user.id) return res.status(403).send('Forbidden');
 
-  const { originalname, size, path: filePath } = req.file;
+  const { originalname, size } = req.file;
+  const fileUrl = req.file.path;
 
   await prisma.file.create({
     data: {
       name: originalname,
       size: size,
-      url: `/uploads/${path.basename(filePath)}`,
+      url: fileUrl,
       folderId,
       userId: req.user.id
     }
