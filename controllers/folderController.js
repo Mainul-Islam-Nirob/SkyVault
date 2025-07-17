@@ -9,8 +9,16 @@ exports.listFolders = async (req, res) => {
     where: { userId: req.user.id },
     orderBy: { createdAt: 'desc' }
   });
-  res.render('folders/list', { folders, user: req.user });
-  
+
+  const files = await prisma.file.findMany({
+    where: {
+      userId: req.user.id,
+      folderId: null // root-level files
+    },
+    orderBy: { uploadedAt: 'desc' }
+  });
+
+  res.render('folders/list', { folders, files, user: req.user });
 };
 
 exports.showCreateForm = (req, res) => {
