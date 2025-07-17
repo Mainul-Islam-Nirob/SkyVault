@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 exports.listFolders = async (req, res) => {
   const folders = await prisma.folder.findMany({
-    where: { userId: req.user.id },
+    where: { parentId: null, userId: req.user.id },
     orderBy: { createdAt: 'desc' }
   });
 
