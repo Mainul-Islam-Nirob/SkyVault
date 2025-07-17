@@ -1,5 +1,8 @@
+const path = require('path');
+const fs = require('fs');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+
 
 exports.listFolders = async (req, res) => {
   const folders = await prisma.folder.findMany({
@@ -88,5 +91,71 @@ exports.viewFolder = async (req, res) => {
     files: folder.files,              
     user: req.user
   });
+};
+
+// Show form to upload file to root (no folder)
+exports.showRootUploadForm = (req, res) => {
+  res.render('folders/upload', { folder: null, user: req.user });
+};
+
+// Show form to upload file to a specific folder
+exports.showFolderUploadForm = async (req, res) => {
+  const folderId = req.params.id;
+
+  try {
+    const folder = await prisma.folder.findUnique({
+      where: { id: folderId },
+    });
+
+    if (!folder || folder.userId !== req.user.id) {
+      return res.status(403).send('Forbidden');
+    }
+
+    res.render('folders/upload', { folder, user: req.user });
+  } catch (err) {
+    console.error(err);
+    res.status(400).send('Invalid folder ID');
+  }
+};
+
+
+exports.uploadFile = async (req, res) => {
+  if (!req.file) {
+    console.error('❌ No file uploaded');
+    return res.status(400).send('No file uploaded.');
+  }
+
+  const { originalname, size, path: filePath } = req.file;
+
+  await prisma.file.create({
+    data: {
+      name: originalname,
+      size: size,
+      url: `/uploads/${path.basename(filePath)}`,
+      userId: req.user.id
+    }
+  });
+
+  res.redirect('/dashboard');
+};
+exports.uploadToFolder = async (req, res) => {
+  const folderId = req.params.id;
+  const folder = await prisma.folder.findUnique({ where: { id: folderId } });
+
+  if (!folder || folder.userId !== req.user.id) return res.status(403).send('Forbidden');
+
+  const { originalname, size, path: filePath } = req.file;
+
+  await prisma.file.create({
+    data: {
+      name: originalname,
+      size: size,
+      url: `/uploads/${path.basename(filePath)}`,
+      folderId,
+      userId: req.user.id
+    }
+  });
+
+  res.redirect(`/folders/${folderId}`);
 };
 

@@ -4,7 +4,7 @@
   <h1 class="text-2xl font-bold mb-4">📁 <%= currentFolder ? currentFolder.name : "Root" %></h1>
 
   <div class="flex justify-end mb-4 gap-4">
-    <a href="<%= currentFolder ? `/folders/${currentFolder.id}/create` : '/folders/create' %>" class="bg-blue-600 text-white px-4 py-2 rounded">+ New Folder</a>
+    <a href="<%= currentFolder ? `/folders/${currentFolder.id}/new-folder` : '/folders/create' %>" class="bg-blue-600 text-white px-4 py-2 rounded">+ New Folder</a>
     <a href="<%= currentFolder ? `/folders/${currentFolder.id}/upload` : '/upload' %>" class="bg-green-600 text-white px-4 py-2 rounded">⬆ Upload File</a>
   </div>
 

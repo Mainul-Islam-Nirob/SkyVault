@@ -2,30 +2,31 @@ const express = require('express');
 const router = express.Router();
 const folderController = require('../controllers/folderController');
 const isAuth = require('../middleware/isAuth');
+const upload = require('../middleware/multer');
 
-// List all folders for user
-router.get('/', isAuth, folderController.listFolders);
+// Upload routes 
+router.get('/upload', isAuth, folderController.showRootUploadForm);
+router.post('/upload', isAuth, upload.single('file'), folderController.uploadFile);
 
-// Show form to create new folder
+// Folder-specific upload
+router.get('/:id/upload', isAuth, folderController.showFolderUploadForm);
+router.post('/:id/upload', isAuth, upload.single('file'), folderController.uploadToFolder);
+
+// Folder CRUD routes
 router.get('/new', isAuth, folderController.showCreateForm);
-
-// Create folder POST
 router.post('/', isAuth, folderController.createFolder);
-
-// Show form to edit folder name
 router.get('/:id/edit', isAuth, folderController.showEditForm);
-
-// Update folder name POST
 router.post('/:id', isAuth, folderController.updateFolder);
-
-// Delete folder
 router.post('/:id/delete', isAuth, folderController.deleteFolder);
 
-// Create nested folder
+// Nested folder
 router.get('/:id/new-folder', isAuth, folderController.showNestedForm);
 router.post('/:id/new-folder', isAuth, folderController.createNestedFolder);
 
-// View a specific folder
+// View folder 
 router.get('/:id', isAuth, folderController.viewFolder);
+
+// List all folders for user
+router.get('/', isAuth, folderController.listFolders);
 
 module.exports = router;

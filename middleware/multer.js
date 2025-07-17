@@ -2,13 +2,13 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-// Storage config
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const folderId = req.params.id;
+    // Use 'root' folder if no id is provided
+    const folderId = req.params.id || 'root';
     const uploadPath = path.join(__dirname, '..', 'uploads', folderId);
 
-    // Ensure folder exists
+    // Ensure the directory exists
     fs.mkdirSync(uploadPath, { recursive: true });
 
     cb(null, uploadPath);
@@ -19,10 +19,8 @@ const storage = multer.diskStorage({
   }
 });
 
-// Filter (optional - restrict types)
 const fileFilter = (req, file, cb) => {
-  // Accept all files for now
-  cb(null, true);
+  cb(null, true); 
 };
 
 const upload = multer({ storage, fileFilter });
