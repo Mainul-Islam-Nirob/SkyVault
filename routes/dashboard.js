@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const folderController = require('../controllers/folderController');
 const isAuth = require('../middleware/isAuth');
-const dashboardController = require('../controllers/dashboardController');
 
-router.get('/dashboard', isAuth, dashboardController.getDashboard);
-
+router.get('/dashboard', isAuth, folderController.listFolders);
 module.exports = router;

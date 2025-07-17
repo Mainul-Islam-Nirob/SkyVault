@@ -21,4 +21,11 @@ router.post('/:id', isAuth, folderController.updateFolder);
 // Delete folder
 router.post('/:id/delete', isAuth, folderController.deleteFolder);
 
+// Create nested folder
+router.get('/:id/new-folder', isAuth, folderController.showNestedForm);
+router.post('/:id/new-folder', isAuth, folderController.createNestedFolder);
+
+// View a specific folder
+router.get('/:id', isAuth, folderController.viewFolder);
+
 module.exports = router;

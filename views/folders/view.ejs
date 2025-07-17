@@ -1,0 +1,42 @@
+<%- include('../partials/header') %>
+
+<div class="container mx-auto px-4 py-6">
+  <h1 class="text-2xl font-bold mb-4">📁 <%= currentFolder ? currentFolder.name : "Root" %></h1>
+
+  <div class="flex justify-end mb-4 gap-4">
+    <a href="<%= currentFolder ? `/folders/${currentFolder.id}/create` : '/folders/create' %>" class="bg-blue-600 text-white px-4 py-2 rounded">+ New Folder</a>
+    <a href="<%= currentFolder ? `/folders/${currentFolder.id}/upload` : '/upload' %>" class="bg-green-600 text-white px-4 py-2 rounded">⬆ Upload File</a>
+  </div>
+
+  <% if (subfolders.length > 0) { %>
+    <h2 class="text-lg font-semibold mb-2">📁 Folders</h2>
+    <ul class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <% subfolders.forEach(folder => { %>
+        <li class="bg-gray-100 p-4 rounded hover:bg-gray-200">
+          <a href="/folders/<%= folder.id %>" class="block text-blue-600 font-medium">
+            📁 <%= folder.name %>
+          </a>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <p class="text-gray-500 mb-6">No folders here.</p>
+  <% } %>
+
+  <% if (files.length > 0) { %>
+    <h2 class="text-lg font-semibold mb-2">📄 Files</h2>
+    <ul class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <% files.forEach(file => { %>
+        <li class="bg-white border rounded p-4 hover:shadow">
+          <p class="font-medium"><%= file.name %></p>
+          <p class="text-sm text-gray-500"><%= Math.round(file.size / 1024) %> KB</p>
+          <a href="<%= file.url %>" target="_blank" class="text-blue-600 text-sm mt-2 inline-block">🔗 View</a>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <p class="text-gray-500">No files here.</p>
+  <% } %>
+</div>
+
+<%- include('../partials/footer') %>
