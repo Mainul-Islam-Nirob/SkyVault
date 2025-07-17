@@ -14,13 +14,18 @@
 tailwind.config = {
   theme: {
     extend: {
-      colors: {
-        midnightNavy: '#121829',
-        electricCyan: '#00FFC8',
-        softLavender: '#A899E6',
-        lightGray: '#D8D8E7',
-        darkSlate: '#1E2336',
-      },
+     colors: {
+        neonTeal: '#00FFC8',          // Bright cyan/teal (main highlight)
+                midnightNavy: '#121829',      // Dark navy background
+        electricCyan: '#00FFC8',      // Same as neonTeal, interchangeable
+        softLavender: '#A899E6',      // Muted lavender/purple accent
+                darkSlate: '#1E2336',         // Dark slate blue, secondary bg
+        primary: '#00FFC8',           // Alias for neonTeal / electricCyan
+        accent: '#A899E6',            // Alias for softLavender
+        moonlightGray: '#A3A3A3', // Darker gray for text
+  lightGray: '#D1D5DB',     // Tailwind's gray-300
+  mutedText: '#9CA3AF',     // Tailwind's gray-400
+},
       fontFamily: {
         sans: ['Poppins', 'sans-serif'],
       },

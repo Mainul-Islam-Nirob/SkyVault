@@ -1,0 +1,9 @@
+<% layout('layout') -%>
+<section class="max-w-md mx-auto mt-12 bg-white p-6 rounded-lg shadow">
+  <h2 class="text-2xl font-bold mb-4">Rename Folder</h2>
+  <form action="/folders/<%= folder.id %>" method="POST" class="space-y-4">
+    <input type="text" name="name" value="<%= folder.name %>" class="w-full px-4 py-2 border rounded" required />
+    <button type="submit" class="w-full bg-neonTeal text-black px-4 py-2 rounded hover:bg-moonlightGray">Update</button>
+  </form>
+  <a href="/folders" class="inline-block mt-4 text-moonlightGray hover:text-neonTeal">Back to folders</a>
+</section>
