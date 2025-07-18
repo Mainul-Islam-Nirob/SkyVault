@@ -1,14 +1,21 @@
 <% layout('layout') -%>
 
 <section class="max-w-5xl mx-auto px-4 py-10">
-  <div class="flex justify-between items-center mb-8">
-    <h1 class="text-4xl font-bold text-white">📁 Your Folders</h1>
-    <div class="space-x-4">
-      <a href="/folders/new" class="bg-neonTeal text-black px-4 py-2 rounded shadow hover:bg-lightGray transition">+ New Folder</a>
-      <a href="/folders/upload" class="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-800 transition">⬆️ Upload File</a>
-    </div>
+<div class="max-w-6xl mx-auto px-6 py-6"></div>
+  <div class="flex justify-end space-x-4 mb-6">
+    <a href="/folders/new" class="bg-neonTeal text-black px-5 py-2 rounded-lg shadow-md hover:bg-lightGray transition duration-200 font-semibold">
+      + New Folder
+    </a>
+    <a href="/folders/upload" class="bg-blue-600 text-white px-5 py-2 rounded-lg shadow-md hover:bg-blue-800 transition duration-200 font-semibold">
+      ⬆️ Upload File
+    </a>
   </div>
 
+    <h1 class="text-4xl font-bold text-white mb-8 flex items-center space-x-2">
+    <span>📁</span>
+    <span>Your Folders</span>
+  </h1>
+</div>
   <% if (folders.length === 0) { %>
     <p class="text-mutedText text-lg">No folders found. Start by creating one.</p>
   <% } else { %>
