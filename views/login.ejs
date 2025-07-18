@@ -1,9 +1,52 @@
 <% layout('layout') -%>
-<section class="max-w-md mx-auto mt-12 bg-white p-8 rounded-lg shadow">
-  <h2 class="text-2xl font-bold mb-6">Login to SkyVault</h2>
+
+<style>
+  .input-style {
+    width: 100%;
+    padding: 0.5rem 1rem; /* px-4 py-2 */
+    border: 1px solid #d1d5db; /* Tailwind gray-300 */
+    border-radius: 0.375rem; /* rounded */
+    outline: none;
+    font-size: 1rem;
+    color: #121829; /* dark text */
+    background-color: #f9fafb; /* light gray background */
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+  .input-style::placeholder {
+    color: #9ca3af; /* gray placeholder */
+  }
+  .input-style:focus {
+    box-shadow: 0 0 0 3px #00FFC8; /* neonTeal glow */
+    border-color: transparent;
+    background-color: white;
+  }
+  .btn-primary {
+    background-color: #00FFC8; /* neonTeal */
+    color: #121829; /* dark text */
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    width: 100%;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 0 10px #00FFC8;
+    font-size: 1rem;
+  }
+  .btn-primary:hover {
+    background-color: #a899e6; /* accent */
+    box-shadow: 0 0 12px #a899e6;
+  }
+</style>
+
+<section class="max-w-md mx-auto mt-12 bg-white p-8 rounded-lg shadow-lg">
+  <h2 class="text-2xl font-bold mb-6 text-midnightNavy text-center">Login to SkyVault</h2>
   <form action="/login" method="POST" class="space-y-4">
-    <input type="email" name="email" placeholder="Email" class="w-full px-4 py-2 border rounded" required />
-    <input type="password" name="password" placeholder="Password" class="w-full px-4 py-2 border rounded" required />
-    <button type="submit" class="w-full bg-primary text-black px-4 py-2 rounded hover:bg-accent">Login</button>
+    <input type="email" name="email" placeholder="Email" class="input-style" required />
+    <input type="password" name="password" placeholder="Password" class="input-style" required />
+    <button type="submit" class="btn-primary">Login</button>
   </form>
+   <p class="mt-6 text-center text-gray-500">
+    Don't have an account?
+    <a href="/register" class="text-neonTeal font-semibold hover:underline">Register here</a>
+  </p>
 </section>
