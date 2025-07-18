@@ -1,21 +1,22 @@
 <% layout('layout') %>
 
 <div class="max-w-7xl mx-auto px-6 py-8 bg-midnightNavy rounded-xl shadow-glowCyan">
-  <h1 class="text-4xl font-extrabold mb-6 text-neonTeal flex items-center gap-3">
-    <span>🗂️</span> <!-- Unique folder emoji -->
-    <span><%= currentFolder ? currentFolder.name : "Root" %></span>
-  </h1>
+<div class="flex justify-center mb-8 gap-6">
+  <a href="<%= currentFolder ? `/folders/${currentFolder.id}/new-folder` : '/folders/create' %>" 
+     class="bg-neonTeal text-midnightNavy px-6 py-2 rounded-xl font-semibold shadow hover:bg-moonlightGray transition">
+    📁 New Folder
+  </a>
+  <a href="<%= currentFolder ? `/folders/${currentFolder.id}/upload` : '/upload' %>" 
+     class="bg-electricCyan text-midnightNavy px-6 py-2 rounded-xl font-semibold shadow hover:bg-softLavender transition">
+    ⬆️ Upload File
+  </a>
+</div>
 
-  <div class="flex justify-end mb-8 gap-4">
-    <a href="<%= currentFolder ? `/folders/${currentFolder.id}/new-folder` : '/folders/create' %>" 
-       class="bg-neonTeal text-midnightNavy px-5 py-2 rounded-lg font-semibold shadow hover:bg-moonlightGray transition">
-      + New Folder
-    </a>
-    <a href="<%= currentFolder ? `/folders/${currentFolder.id}/upload` : '/upload' %>" 
-       class="bg-electricCyan text-midnightNavy px-5 py-2 rounded-lg font-semibold shadow hover:bg-softLavender transition">
-      ⬆ Upload File
-    </a>
-  </div>
+<!-- Folder Title (Below the Buttons) -->
+<h1 class="text-4xl font-extrabold mb-6 text-neonTeal flex items-center justify-center gap-3">
+  <span>🗂️</span>
+  <span><%= currentFolder ? currentFolder.name : "Root" %></span>
+</h1>
 
   <% if (subfolders.length > 0) { %>
     <h2 class="text-2xl font-bold mb-4 text-white flex items-center gap-2">

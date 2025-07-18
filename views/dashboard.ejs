@@ -1,21 +1,22 @@
 <% layout('layout') -%>
 
 <section class="max-w-6xl mx-auto px-4 py-10">
-  <div class="flex justify-between items-center mb-10">
-    <h1 class="text-4xl font-bold text-white flex items-center gap-3">
-      <span><%= currentFolder ? '🗂️' : '📁' %></span>
-      <span><%= currentFolder ? currentFolder.name : 'Your Folders' %></span>
-    </h1>
+  <div class="flex justify-center gap-4 mb-8">
+  <a href="<%= currentFolder ? `/folders/${currentFolder.id}/new-folder` : '/folders/new' %>" 
+     class="bg-neonTeal text-black px-6 py-2 rounded-xl shadow-md hover:bg-lightGray transition font-semibold">
+    📁 New Folder
+  </a>
+  <a href="<%= currentFolder ? `/folders/${currentFolder.id}/upload` : '/folders/upload' %>" 
+     class="bg-blue-600 text-white px-6 py-2 rounded-xl shadow-md hover:bg-blue-800 transition font-semibold">
+    ⬆️ Upload File
+  </a>
+</div>
 
-    <div class="flex gap-4">
-      <a href="<%= currentFolder ? `/folders/${currentFolder.id}/new-folder` : '/folders/new' %>" class="bg-neonTeal text-black px-5 py-2 rounded-lg shadow-md hover:bg-lightGray transition duration-200 font-semibold">
-        + New Folder
-      </a>
-      <a href="<%= currentFolder ? `/folders/${currentFolder.id}/upload` : '/folders/upload' %>" class="bg-blue-600 text-white px-5 py-2 rounded-lg shadow-md hover:bg-blue-800 transition duration-200 font-semibold">
-        ⬆️ Upload File
-      </a>
-    </div>
-  </div>
+<!-- Centered Folder Title -->
+<h1 class="text-4xl font-extrabold text-white text-center mb-10 flex  gap-3">
+  <span><%= currentFolder ? '🗂️' : '📁' %></span>
+  <span><%= currentFolder ? currentFolder.name : 'Your Folders' %></span>
+</h1>
 
   <% const folderList = currentFolder ? subfolders : folders; %>
   <% if (folderList.length === 0) { %>
