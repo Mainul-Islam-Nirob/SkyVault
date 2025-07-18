@@ -1,8 +1,57 @@
-<%- include("partials/header") %>
-<%- include("partials/navbar") %>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SkyVault</title>
 
-<main class="min-h-screen container mx-auto px-4 py-6">
-  <%- body %>
-</main>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
 
-<%- include("partials/footer") %>
+    <!-- Tailwind Setup -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              neonTeal: "#00FFC8", // Highlight
+              midnightNavy: "#121829", // Background
+              electricCyan: "#00FFC8",
+              softLavender: "#A899E6",
+              darkSlate: "#1E2336",
+              primary: "#00FFC8",
+              accent: "#A899E6",
+              moonlightGray: "#A3A3A3",
+              mutedText: "#9CA3AF",
+              lightGray: "#D8D8E7",
+            },
+            fontFamily: {
+              sans: ["Poppins", "sans-serif"],
+            },
+            boxShadow: {
+              glowCyan: "0 0 8px #00FFC8",
+              glowLavender: "0 0 10px #A899E6",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+
+ <body class="bg-gradient-to-b from-gray-950 via-gray-900 to-cosmicNavy text-white font-sans antialiased tracking-wide">
+  <%- include("partials/navbar") %>
+
+  <main class="min-h-screen flex flex-col container mx-auto px-4 py-8">
+    <%- body %>
+  </main>
+
+  <%- include("partials/footer") %>
+</body>
+
+</html>

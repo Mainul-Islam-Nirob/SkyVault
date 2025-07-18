@@ -1,25 +1,45 @@
 <% layout('layout') %>
 
-<section class="flex-grow flex flex-col justify-center items-center text-center px-6 py-24 max-w-3xl mx-auto space-y-8">
-  <h1 class="text-6xl font-extrabold text-neonTeal drop-shadow-glow tracking-tight">
-    Welcome to SkyVault
+<!-- Hero Section -->
+<section class="relative flex-grow flex flex-col justify-center items-center text-center px-6 py-32 max-w-4xl mx-auto space-y-10">
+  <!-- Animated background particles -->
+  <div class="absolute inset-0 -z-10 overflow-hidden">
+    <div class="w-full h-full bg-gradient-to-br from-[#0f172a] via-[#0e7490] to-[#22d3ee] opacity-20 animate-pulse blur-3xl rounded-full"></div>
+  </div>
+
+  <h1 class="text-6xl sm:text-7xl font-extrabold text-white tracking-tight drop-shadow-lg">
+    Welcome to <span class="text-neonTeal">SkyVault</span>
   </h1>
-  <p class="text-xl text-moonlightGray/80 max-w-xl">
-    Secure your files in the celestial vault — accessible anywhere, anytime.  
-    Experience cloud storage reimagined with elegance and power.
+  
+  <p class="text-xl text-gray-300 max-w-xl leading-relaxed">
+    Secure your files in the celestial vault — accessible anywhere, anytime.
+    Cloud storage reimagined with elegance, simplicity, and power.
   </p>
+
   <% if (!user) { %>
     <div class="space-x-6">
-      <a href="/register" class="inline-block px-8 py-3 rounded-full border-2 border-neonTeal text-neonTeal font-semibold hover:bg-neonTeal hover:text-cosmicNavy transition-shadow shadow-glow">
-        Get Started
-      </a>
-      <a href="/login" class="inline-block px-8 py-3 rounded-full bg-neonTeal text-cosmicNavy font-semibold hover:bg-teal-400 transition-shadow shadow-glow">
-        Login
-      </a>
+      <a href="/register" class="inline-block px-8 py-3 rounded-full border-2 border-neonTeal text-neonTeal font-semibold hover:bg-neonTeal hover:text-cosmicNavy transition duration-200 shadow-md hover:shadow-lg">Get Started</a>
+      <a href="/login" class="inline-block px-8 py-3 rounded-full bg-neonTeal text-cosmicNavy font-semibold hover:bg-teal-400 transition duration-200 shadow-md hover:shadow-lg">Login</a>
     </div>
   <% } else { %>
-    <a href="/dashboard" class="inline-block px-10 py-4 rounded-full bg-neonTeal text-cosmicNavy font-bold text-lg hover:bg-teal-400 transition-shadow shadow-glow">
-      Go to Dashboard
-    </a>
+    <a href="/dashboard" class="inline-block px-10 py-4 rounded-full bg-neonTeal text-cosmicNavy font-bold text-lg hover:bg-teal-400 transition duration-200 shadow-md hover:shadow-lg">Go to Dashboard</a>
   <% } %>
+</section>
+
+<!-- Feature Section -->
+<section class="bg-cosmicNavy py-20 px-6 text-white">
+  <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-10 text-center">
+    <div class="bg-gradient-to-br from-cyan-900 to-teal-600 p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300">
+      <h3 class="text-2xl font-bold mb-3">🔒 Military-Grade Security</h3>
+      <p class="text-gray-300">Files are encrypted, protected, and only accessible by you. Peace of mind, built in.</p>
+    </div>
+    <div class="bg-gradient-to-br from-indigo-800 to-violet-700 p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300">
+      <h3 class="text-2xl font-bold mb-3">📁 Organized Folders</h3>
+      <p class="text-gray-300">Create nested folders, share them with others, and keep your SkyVault structured.</p>
+    </div>
+    <div class="bg-gradient-to-br from-emerald-800 to-cyan-700 p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300">
+      <h3 class="text-2xl font-bold mb-3">☁️ Accessible Anywhere</h3>
+      <p class="text-gray-300">Access your files from any device — no matter where you are in the galaxy.</p>
+    </div>
+  </div>
 </section>
