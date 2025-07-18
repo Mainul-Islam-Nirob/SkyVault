@@ -6,19 +6,29 @@ const prisma = new PrismaClient();
 
 exports.listFolders = async (req, res) => {
   const folders = await prisma.folder.findMany({
-    where: { parentId: null, userId: req.user.id },
-    orderBy: { createdAt: 'desc' }
+    where: {
+      userId: req.user.id,
+      parentId: null
+    },
+    include: {
+      files: true
+    }
   });
 
   const files = await prisma.file.findMany({
     where: {
       userId: req.user.id,
-      folderId: null // root-level files
-    },
-    orderBy: { uploadedAt: 'desc' }
+      folderId: null
+    }
   });
 
-  res.render('folders/list', { folders, files, user: req.user });
+  res.render('dashboard', {
+    currentFolder: null,
+    folders: folders,
+    subfolders: [], 
+    files: files,
+    user: req.user
+  });
 };
 
 exports.showCreateForm = (req, res) => {
@@ -93,13 +103,15 @@ exports.viewFolder = async (req, res) => {
 
   if (!folder || folder.userId !== req.user.id) return res.status(403).send('Forbidden');
 
-  res.render('folders/view', {
-    currentFolder: folder,            
-    subfolders: folder.subfolders,    
-    files: folder.files,              
+  res.render('dashboard', {
+    currentFolder: folder,
+    folders: [], 
+    subfolders: folder.subfolders,
+    files: folder.files,
     user: req.user
   });
 };
+
 
 // Show form to upload file to root (no folder)
 exports.showRootUploadForm = (req, res) => {
