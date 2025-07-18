@@ -1,20 +1,43 @@
 <% layout('layout') -%>
 
-<div class="max-w-xl mx-auto mt-10 bg-white shadow-xl rounded-lg p-8">
-  <h2 class="text-2xl font-semibold mb-6 text-gray-700">
-    Create Subfolder
+<section class="max-w-xl mx-auto mt-20 bg-midnightNavy p-10 rounded-2xl shadow-glowCyan border border-neonTeal/30">
+  <!-- Heading with folder emoji -->
+  <h2 class="text-3xl font-extrabold mb-8 text-neonTeal flex items-center gap-3">
+    <span>📂</span> <span>Create Subfolder</span>
   </h2>
 
+  <!-- Subfolder creation form -->
   <form action="/folders/<%= parentId %>/new-folder" method="POST" class="space-y-6">
+    <!-- Input field -->
     <div>
-      <label class="block text-sm font-medium text-gray-700">Folder Name</label>
-      <input type="text" name="name" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-4 py-2" />
+      <label for="name" class="block text-sm font-medium text-moonlightGray mb-2">
+        Subfolder Name
+      </label>
+      <input
+        type="text"
+        id="name"
+        name="name"
+        required
+        placeholder="Enter subfolder name..."
+        class="w-full px-5 py-3 rounded-xl bg-darkSlate text-white border border-gray-700 focus:border-electricCyan focus:ring-2 focus:ring-electricCyan focus:outline-none transition"
+      />
     </div>
 
+    <!-- Submit button -->
     <div>
-      <button type="submit" class="w-full py-2 px-4 bg-neonTeal text-black rounded-md hover:bg-moonlightGray">
-        Create Subfolder
+      <button
+        type="submit"
+        class="w-full bg-neonTeal text-midnightNavy font-semibold py-3 rounded-xl shadow-glow hover:bg-softLavender transition"
+      >
+        ➕ Create Subfolder
       </button>
     </div>
   </form>
-</div>
+
+  <!-- Back link -->
+  <div class="mt-8 text-center">
+    <a href="/folders/<%= parentId %>" class="text-moonlightGray hover:text-neonTeal font-medium transition duration-200">
+      ← Back to Parent Folder
+    </a>
+  </div>
+</section>
