@@ -1,42 +1,79 @@
-<%- include('../partials/header') %>
+<% layout('layout') %>
 
-<div class="container mx-auto px-4 py-6">
-  <h1 class="text-2xl font-bold mb-4">📁 <%= currentFolder ? currentFolder.name : "Root" %></h1>
+<div class="max-w-7xl mx-auto px-6 py-8 bg-midnightNavy rounded-xl shadow-glowCyan">
+  <h1 class="text-4xl font-extrabold mb-6 text-neonTeal flex items-center gap-3">
+    <span>🗂️</span> <!-- Unique folder emoji -->
+    <span><%= currentFolder ? currentFolder.name : "Root" %></span>
+  </h1>
 
-  <div class="flex justify-end mb-4 gap-4">
-    <a href="<%= currentFolder ? `/folders/${currentFolder.id}/new-folder` : '/folders/create' %>" class="bg-blue-600 text-white px-4 py-2 rounded">+ New Folder</a>
-    <a href="<%= currentFolder ? `/folders/${currentFolder.id}/upload` : '/upload' %>" class="bg-green-600 text-white px-4 py-2 rounded">⬆ Upload File</a>
+  <div class="flex justify-end mb-8 gap-4">
+    <a href="<%= currentFolder ? `/folders/${currentFolder.id}/new-folder` : '/folders/create' %>" 
+       class="bg-neonTeal text-midnightNavy px-5 py-2 rounded-lg font-semibold shadow hover:bg-moonlightGray transition">
+      + New Folder
+    </a>
+    <a href="<%= currentFolder ? `/folders/${currentFolder.id}/upload` : '/upload' %>" 
+       class="bg-electricCyan text-midnightNavy px-5 py-2 rounded-lg font-semibold shadow hover:bg-softLavender transition">
+      ⬆ Upload File
+    </a>
   </div>
 
   <% if (subfolders.length > 0) { %>
-    <h2 class="text-lg font-semibold mb-2">📁 Folders</h2>
-    <ul class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+    <h2 class="text-2xl font-bold mb-4 text-white flex items-center gap-2">
+      <span>📂</span> <!-- Another folder emoji -->
+      Folders
+    </h2>
+    <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-8">
       <% subfolders.forEach(folder => { %>
-        <li class="bg-gray-100 p-4 rounded hover:bg-gray-200">
-          <a href="/folders/<%= folder.id %>" class="block text-blue-600 font-medium">
-            📁 <%= folder.name %>
+        <li class="bg-darkSlate p-5 rounded-xl shadow-md hover:shadow-lg transition">
+          <a href="/folders/<%= folder.id %>" class="block text-neonTeal font-semibold text-lg truncate hover:text-electricCyan">
+            🗃️ <%= folder.name %>  <!-- Unique emoji -->
           </a>
+          <!-- Folder actions -->
+          <div class="flex gap-3 mt-4 text-sm justify-end">
+            <a href="/folders/<%= folder.id %>/share" title="Share" class="text-yellow-400 hover:text-yellow-300" aria-label="Share folder">
+              🔗
+            </a>
+            <a href="/folders/<%= folder.id %>/rename" title="Rename" class="text-accent hover:text-neonTeal" aria-label="Rename folder">
+              ✏️
+            </a>
+            <form action="/folders/<%= folder.id %>/delete" method="POST" onsubmit="return confirm('Are you sure?');" aria-label="Delete folder">
+              <button type="submit" class="text-red-500 hover:text-red-700">
+                🗑️
+              </button>
+            </form>
+          </div>
         </li>
       <% }) %>
     </ul>
   <% } else { %>
-    <p class="text-gray-500 mb-6">No folders here.</p>
+    <p class="text-moonlightGray mb-8 italic">No folders here.</p>
   <% } %>
 
   <% if (files.length > 0) { %>
-    <h2 class="text-lg font-semibold mb-2">📄 Files</h2>
-    <ul class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <h2 class="text-2xl font-bold mb-4 text-white flex items-center gap-2">
+      <span>📃</span> <!-- Unique file emoji -->
+      Files
+    </h2>
+    <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
       <% files.forEach(file => { %>
-        <li class="bg-white border rounded p-4 hover:shadow">
-          <p class="font-medium"><%= file.name %></p>
-          <p class="text-sm text-gray-500"><%= Math.round(file.size / 1024) %> KB</p>
-          <a href="<%= file.url %>" target="_blank" class="text-blue-600 text-sm mt-2 inline-block">🔗 View</a>
+        <li class="bg-darkSlate p-5 rounded-xl shadow-md hover:shadow-lg transition relative">
+          <p class="font-semibold text-neonTeal truncate"><%= file.name %></p>
+          <p class="text-moonlightGray text-sm mb-3"><%= Math.round(file.size / 1024) %> KB</p>
+
+          <div class="flex justify-between items-center">
+            <a href="<%= file.url %>" target="_blank" class="text-electricCyan text-sm hover:underline" aria-label="View file">
+              🔍 View
+            </a>
+            <form action="/files/<%= file.id %>/delete" method="POST" onsubmit="return confirm('Are you sure you want to delete this file?');" aria-label="Delete file">
+              <button type="submit" class="text-red-500 hover:text-red-700 text-lg">
+                🗑️
+              </button>
+            </form>
+          </div>
         </li>
       <% }) %>
     </ul>
   <% } else { %>
-    <p class="text-gray-500">No files here.</p>
+    <p class="text-moonlightGray italic">No files here.</p>
   <% } %>
 </div>
-
-<%- include('../partials/footer') %>
