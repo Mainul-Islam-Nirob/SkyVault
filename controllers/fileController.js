@@ -26,7 +26,12 @@ exports.deleteFile = async (req, res) => {
       where: { id: fileId }
     });
 
-    res.redirect('/folders'); 
+    if (file.folderId) {
+      res.redirect(`/folders/${file.folderId}`);
+    } else {
+      res.redirect('/folders');
+    }
+
   } catch (err) {
     console.error('Error deleting file:', err);
     res.status(500).send('Internal Server Error');
