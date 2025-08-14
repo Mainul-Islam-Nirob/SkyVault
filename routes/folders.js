@@ -11,18 +11,6 @@ router.get('/', isAuth, folderController.listFolders);
 router.get('/new', isAuth, folderController.showCreateForm);
 router.post('/', isAuth, folderController.createFolder);
 
-// Edit and update a folder
-router.get('/:id/edit', isAuth, folderController.showEditForm);
-router.post('/:id', isAuth, folderController.updateFolder);
-
-// Delete a folder
-router.post('/:id/delete', isAuth, folderController.deleteFolder);
-
-// Create a nested folder inside another folder
-router.get('/:id/new-folder', isAuth, folderController.showNestedForm);
-router.post('/:id/new-folder', isAuth, folderController.createNestedFolder);
-
-
 // Upload to root (no folder)
 router.get('/upload', isAuth, folderController.showRootUploadForm);
 router.post('/upload', isAuth, upload.single('file'), folderController.uploadFile);
@@ -31,7 +19,19 @@ router.post('/upload', isAuth, upload.single('file'), folderController.uploadFil
 router.get('/:id/upload', isAuth, folderController.showFolderUploadForm);
 router.post('/:id/upload', isAuth, upload.single('file'), folderController.uploadFile);
 
+// Create a nested folder inside another folder
+router.get('/:id/new-folder', isAuth, folderController.showNestedForm);
+router.post('/:id/new-folder', isAuth, folderController.createNestedFolder);
+
+// Edit and update a folder
+router.get('/:id/edit', isAuth, folderController.showEditForm);
+router.post('/:id', isAuth, folderController.updateFolder);
+
+// Delete a folder
+router.post('/:id/delete', isAuth, folderController.deleteFolder);
+
 // View a specific folder and its contents
 router.get('/:id', isAuth, folderController.viewFolder);
 
 module.exports = router;
+
