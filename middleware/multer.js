@@ -6,6 +6,7 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: 'sky-vault',
+    resource_type: 'auto',
     allowed_formats: ['jpg', 'png', 'pdf', 'docx', 'txt', 'zip', 'mp4'],
     public_id: (req, file) => `${Date.now()}-${file.originalname}`
   }

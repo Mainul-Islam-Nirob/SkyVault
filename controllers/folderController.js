@@ -173,6 +173,47 @@ exports.showFolderUploadForm = async (req, res) => {
   }
 };
 
+// exports.uploadFile = async (req, res) => {
+//   if (!req.file) return res.status(400).send('No file uploaded.');
+
+//   const folderId = req.params.id || null;
+//   let folder = null;
+
+//   if (folderId) {
+//     folder = await prisma.folder.findUnique({ where: { id: folderId } });
+//     if (!folder || folder.userId !== req.user.id) {
+//       return res.status(403).send('Forbidden');
+//     }
+//   }
+
+//   try {
+//     const folderPath = folder ? `sky-vault/${folder.name.replace(/[^a-zA-Z0-9-_]/g, '_')}` : 'sky-vault/root';
+
+  
+//     const result = await cloudinary.uploader.upload(req.file.path, {
+//       folder: folderPath,
+//       resource_type: 'auto'
+//     });
+
+//     await prisma.file.create({
+//       data: {
+//         name: req.file.originalname,
+//         size: req.file.size,
+//         url: result.secure_url,
+//         cloudinaryPublicId: result.public_id,
+//         folderId: folderId,
+//         userId: req.user.id
+//       }
+//     });
+
+//     res.redirect(folderId ? `/folders/${folderId}` : '/folders');
+//   } catch (err) {
+//     console.error('Unified upload error:', err);
+//     res.status(500).send('Upload failed');
+//   }
+// };
+
+
 exports.uploadFile = async (req, res) => {
   if (!req.file) return res.status(400).send('No file uploaded.');
 
@@ -187,13 +228,27 @@ exports.uploadFile = async (req, res) => {
   }
 
   try {
-    const folderPath = folder ? `sky-vault/${folder.name.replace(/[^a-zA-Z0-9-_]/g, '_')}` : 'sky-vault/root';
+    const folderPath = folder
+      ? `sky-vault/${folder.name.replace(/[^a-zA-Z0-9-_]/g, '_')}`
+      : 'sky-vault/root';
 
+    // ✅ Clean filename to avoid .pdf.pdf issues
+  const cleanName = `${Date.now()}-${req.file.originalname.replace(/\.[^/.]+$/, '')}`;
+
+    // ✅ Validate MIME type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf', 'video/mp4'];
+    if (!allowedTypes.includes(req.file.mimetype)) {
+      return res.status(400).send('Unsupported file type');
+    }
+
+    // ✅ Upload to Cloudinary with clean public_id
     const result = await cloudinary.uploader.upload(req.file.path, {
       folder: folderPath,
+      public_id: cleanName,
       resource_type: 'auto'
     });
 
+    // ✅ Save to DB
     await prisma.file.create({
       data: {
         name: req.file.originalname,
@@ -205,81 +260,15 @@ exports.uploadFile = async (req, res) => {
       }
     });
 
+    // ✅ Optional: delete temp file
+    fs.unlink(req.file.path, (err) => {
+      if (err) console.error('Failed to delete temp file:', err);
+    });
+
     res.redirect(folderId ? `/folders/${folderId}` : '/folders');
   } catch (err) {
-    console.error('Unified upload error:', err);
+    console.error('Unified upload error:', err.response?.data || err.message || err);
     res.status(500).send('Upload failed');
   }
 };
-
-
-// exports.uploadFile = async (req, res) => {
-//   if (!req.file) return res.status(400).send('No file uploaded.');
-
-//   const { originalname, size } = req.file;
-//   const fileUrl = req.file.path;
-
-//   await prisma.file.create({
-//     data: {
-//       name: originalname,
-//       size: size,
-//       url: fileUrl,
-//       cloudinaryPublicId: fileUrl.public_id,
-//       userId: req.user.id
-//     }
-//   });
-
-//   res.redirect('/dashboard');
-// };
-
-
-// exports.uploadFile = async (req, res) => {
-//   if (!req.file) return res.status(400).send('No file uploaded.');
-
-//   try {
-//     const result = await cloudinary.uploader.upload(req.file.path, {
-//       folder: 'sky-vault/root',
-//       resource_type: 'auto' 
-//     });
-
-//     await prisma.file.create({
-//       data: {
-//         name: req.file.originalname,
-//         size: req.file.size,
-//         url: result.secure_url,
-//         cloudinaryPublicId: result.public_id,
-//         userId: req.user.id
-//       }
-//     });
-
-//     res.redirect('/folders');
-//   } catch (err) {
-//     console.error('Upload error:', err);
-//     res.status(500).send('Upload failed');
-//   }
-// };
-
-
-// exports.uploadToFolder = async (req, res) => {
-//   const folderId = req.params.id;
-//   const folder = await prisma.folder.findUnique({ where: { id: folderId } });
-
-//   if (!folder || folder.userId !== req.user.id) return res.status(403).send('Forbidden');
-
-//   const { originalname, size } = req.file;
-//   const fileUrl = req.file.path;
-
-//   await prisma.file.create({
-//     data: {
-//       name: originalname,
-//       size: size,
-//       url: fileUrl,
-//       cloudinaryPublicId: fileUrl.public_id,
-//       folderId,
-//       userId: req.user.id
-//     }
-//   });
-
-//   res.redirect(`/folders/${folderId}`);
-// };
 
