@@ -3,7 +3,6 @@ const fs = require('fs');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-
 exports.listFolders = async (req, res) => {
   const folders = await prisma.folder.findMany({
     where: {
@@ -63,12 +62,56 @@ exports.updateFolder = async (req, res) => {
   res.redirect('/folders');
 };
 
-exports.deleteFolder = async (req, res) => {
-  const folder = await prisma.folder.findUnique({ where: { id: req.params.id } });
-  if (!folder || folder.userId !== req.user.id) return res.status(403).send('Forbidden');
 
-  await prisma.folder.delete({ where: { id: req.params.id } });
-  res.redirect('/folders');
+// exports.deleteFolder = async (req, res) => {
+//   const folder = await prisma.folder.findUnique({ where: { id: req.params.id } });
+//   if (!folder || folder.userId !== req.user.id) return res.status(403).send('Forbidden');
+
+//   await prisma.folder.delete({ where: { id: req.params.id } });
+//   res.redirect('/folders');
+// };
+
+async function deleteFolderRecursive(folderId, userId) {
+  await prisma.file.deleteMany({
+    where: { folderId, userId }
+  });
+
+  const subfolders = await prisma.folder.findMany({
+    where: { parentId: folderId, userId },
+    select: { id: true }
+  });
+
+  for (const sub of subfolders) {
+    await deleteFolderRecursive(sub.id, userId);
+  }
+
+  await prisma.folder.delete({
+    where: { id: folderId }
+  });
+}
+
+exports.deleteFolder = async (req, res) => {
+  const folderId = req.params.id;
+
+  if (!folderId || typeof folderId !== 'string') {
+    return res.status(400).send('Invalid folder ID');
+  }
+
+  try {
+    const folder = await prisma.folder.findUnique({
+      where: { id: folderId } 
+    });
+
+    if (!folder || folder.userId !== req.user.id) {
+      return res.status(403).send('Forbidden');
+    }
+
+    await deleteFolderRecursive(folderId, req.user.id);
+    res.redirect('/folders');
+  } catch (err) {
+    console.error('Error deleting folder:', err);
+    res.status(500).send('Internal Server Error');
+  }
 };
 
 exports.showNestedForm = (req, res) => {
