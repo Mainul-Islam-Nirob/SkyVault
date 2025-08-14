@@ -14,6 +14,7 @@ const setLocals = require('./middleware/setLocals');
 const authRoutes = require('./routes/auth');
 const dashboardRoutes = require('./routes/dashboard');
 const folderRoutes = require('./routes/folders');
+const fileRoutes = require('./routes/files');
 
 const app = express();
 const prisma = new PrismaClient();
@@ -68,6 +69,7 @@ app.get('/', (req, res) => {
 app.use(authRoutes);
 app.use(dashboardRoutes); 
 app.use('/folders', folderRoutes);
+app.use('/files', fileRoutes);
 
 // START
 app.listen(3000, () => {
