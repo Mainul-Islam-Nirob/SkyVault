@@ -35,6 +35,7 @@ model File {
   name       String
   size       Int
   url        String
+  cloudinaryPublicId String?
   uploadedAt DateTime @default(now())
   folder     Folder?  @relation(fields: [folderId], references: [id])
   folderId   String?

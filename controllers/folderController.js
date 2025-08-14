@@ -2,6 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const cloudinary = require('../config/cloudinary');
 
 exports.listFolders = async (req, res) => {
   const folders = await prisma.folder.findMany({
@@ -172,45 +173,113 @@ exports.showFolderUploadForm = async (req, res) => {
   }
 };
 
-
 exports.uploadFile = async (req, res) => {
   if (!req.file) return res.status(400).send('No file uploaded.');
 
-  const { originalname, size } = req.file;
-  const fileUrl = req.file.path;
+  const folderId = req.params.id || null;
+  let folder = null;
 
-  await prisma.file.create({
-    data: {
-      name: originalname,
-      size: size,
-      url: fileUrl,
-      cloudinaryPublicId: fileUrl.public_id,
-      userId: req.user.id
+  if (folderId) {
+    folder = await prisma.folder.findUnique({ where: { id: folderId } });
+    if (!folder || folder.userId !== req.user.id) {
+      return res.status(403).send('Forbidden');
     }
-  });
+  }
 
-  res.redirect('/dashboard');
+  try {
+    const folderPath = folder ? `sky-vault/${folder.name.replace(/[^a-zA-Z0-9-_]/g, '_')}` : 'sky-vault/root';
+
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: folderPath,
+      resource_type: 'auto'
+    });
+
+    await prisma.file.create({
+      data: {
+        name: req.file.originalname,
+        size: req.file.size,
+        url: result.secure_url,
+        cloudinaryPublicId: result.public_id,
+        folderId: folderId,
+        userId: req.user.id
+      }
+    });
+
+    res.redirect(folderId ? `/folders/${folderId}` : '/folders');
+  } catch (err) {
+    console.error('Unified upload error:', err);
+    res.status(500).send('Upload failed');
+  }
 };
 
-exports.uploadToFolder = async (req, res) => {
-  const folderId = req.params.id;
-  const folder = await prisma.folder.findUnique({ where: { id: folderId } });
 
-  if (!folder || folder.userId !== req.user.id) return res.status(403).send('Forbidden');
+// exports.uploadFile = async (req, res) => {
+//   if (!req.file) return res.status(400).send('No file uploaded.');
 
-  const { originalname, size } = req.file;
-  const fileUrl = req.file.path;
+//   const { originalname, size } = req.file;
+//   const fileUrl = req.file.path;
 
-  await prisma.file.create({
-    data: {
-      name: originalname,
-      size: size,
-      url: fileUrl,
-      folderId,
-      userId: req.user.id
-    }
-  });
+//   await prisma.file.create({
+//     data: {
+//       name: originalname,
+//       size: size,
+//       url: fileUrl,
+//       cloudinaryPublicId: fileUrl.public_id,
+//       userId: req.user.id
+//     }
+//   });
 
-  res.redirect(`/folders/${folderId}`);
-};
+//   res.redirect('/dashboard');
+// };
+
+
+// exports.uploadFile = async (req, res) => {
+//   if (!req.file) return res.status(400).send('No file uploaded.');
+
+//   try {
+//     const result = await cloudinary.uploader.upload(req.file.path, {
+//       folder: 'sky-vault/root',
+//       resource_type: 'auto' 
+//     });
+
+//     await prisma.file.create({
+//       data: {
+//         name: req.file.originalname,
+//         size: req.file.size,
+//         url: result.secure_url,
+//         cloudinaryPublicId: result.public_id,
+//         userId: req.user.id
+//       }
+//     });
+
+//     res.redirect('/folders');
+//   } catch (err) {
+//     console.error('Upload error:', err);
+//     res.status(500).send('Upload failed');
+//   }
+// };
+
+
+// exports.uploadToFolder = async (req, res) => {
+//   const folderId = req.params.id;
+//   const folder = await prisma.folder.findUnique({ where: { id: folderId } });
+
+//   if (!folder || folder.userId !== req.user.id) return res.status(403).send('Forbidden');
+
+//   const { originalname, size } = req.file;
+//   const fileUrl = req.file.path;
+
+//   await prisma.file.create({
+//     data: {
+//       name: originalname,
+//       size: size,
+//       url: fileUrl,
+//       cloudinaryPublicId: fileUrl.public_id,
+//       folderId,
+//       userId: req.user.id
+//     }
+//   });
+
+//   res.redirect(`/folders/${folderId}`);
+// };
 

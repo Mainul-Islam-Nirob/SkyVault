@@ -29,7 +29,7 @@ router.post('/upload', isAuth, upload.single('file'), folderController.uploadFil
 
 // Upload to a specific folder
 router.get('/:id/upload', isAuth, folderController.showFolderUploadForm);
-router.post('/:id/upload', isAuth, upload.single('file'), folderController.uploadToFolder);
+router.post('/:id/upload', isAuth, upload.single('file'), folderController.uploadFile);
 
 // View a specific folder and its contents
 router.get('/:id', isAuth, folderController.viewFolder);

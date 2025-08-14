@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs');
+const axios = require('axios');
 const cloudinary = require('../config/cloudinary');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
@@ -38,6 +39,28 @@ exports.deleteFile = async (req, res) => {
   }
 };
 
+// exports.downloadFile = async (req, res) => {
+//   const fileId = req.params.id;
+
+//   try {
+//     const file = await prisma.file.findUnique({
+//       where: { id: fileId }
+//     });
+
+//     if (!file || file.userId !== req.user.id) {
+//       return res.status(403).send('Forbidden');
+//     }
+
+//     return res.redirect(file.url);
+
+
+//   } catch (err) {
+//     console.error('Error downloading file:', err);
+//     res.status(500).send('Internal Server Error');
+//   }
+// };
+
+
 exports.downloadFile = async (req, res) => {
   const fileId = req.params.id;
 
@@ -50,9 +73,14 @@ exports.downloadFile = async (req, res) => {
       return res.status(403).send('Forbidden');
     }
 
-    return res.redirect(file.url);
+    const response = await axios.get(file.url, {
+      responseType: 'stream'
+    });
 
+    res.setHeader('Content-Disposition', `attachment; filename="${file.name}"`);
+    res.setHeader('Content-Type', response.headers['content-type']);
 
+    response.data.pipe(res);
   } catch (err) {
     console.error('Error downloading file:', err);
     res.status(500).send('Internal Server Error');
