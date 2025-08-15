@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Link Error</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background-color: #fff5f5;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .error-card {
+      background-color: #ffe0e0;
+      border: 1px solid #ffcccc;
+      border-radius: 8px;
+      padding: 2rem;
+      width: 400px;
+      height: 180px;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .error-card h1 {
+      color: #d8000c;
+      margin-bottom: 1rem;
+    }
+
+    .error-card p {
+      color: #a94442;
+      margin-bottom: 1.5rem;
+    }
+
+    .error-card a {
+      display: inline-block;
+      padding: 0.6rem 1.2rem;
+      background-color: #d8000c;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      transition: background-color 0.3s ease;
+    }
+
+    .error-card a:hover {
+      background-color: #b30000;
+    }
+  </style>
+</head>
+<body>
+  <div class="error-card">
+    <h1>Error :(</h1>
+     <p><%= message %></p>
+    <a href="/">Go Back Home</a>
+  </div>
+</body>
+</html>

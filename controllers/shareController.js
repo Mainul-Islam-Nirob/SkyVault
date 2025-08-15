@@ -46,7 +46,7 @@ exports.generateShareLink = async (req, res) => {
   const folder = await prisma.folder.findUnique({ where: { id } });
   const files = await prisma.file.findMany({ where: { folderId: id } });
 
-  res.render('share-form', {
+  res.render('share/share-form', {
     folder,
     files,
     sharedLink: shared,
@@ -65,7 +65,7 @@ exports.viewSharedFolder = async (req, res) => {
   });
 
   if (!shared || new Date() > shared.expiresAt) {
-    return res.status(404).render('error', { message: 'Link expired or invalid.' });
+    return res.status(404).render('share/error', { message: 'Link expired or invalid.' });
   }
 
   // Determine which folder to show
@@ -74,7 +74,7 @@ exports.viewSharedFolder = async (req, res) => {
     : shared.folder;
 
   if (!currentFolder) {
-    return res.status(404).render('error', { message: 'Folder not found.' });
+    return res.status(404).render('share/error', { message: 'Folder not found.' });
   }
 
   // Validate that currentFolder is a descendant of shared.folder
@@ -91,7 +91,7 @@ exports.viewSharedFolder = async (req, res) => {
   }
 
   if (!isValid) {
-    return res.status(403).render('error', { message: 'Access denied to this folder.' });
+    return res.status(403).render('share/error', { message: 'Access denied to this folder.' });
   }
 
   const subfolders = await prisma.folder.findMany({
@@ -112,7 +112,7 @@ exports.viewSharedFolder = async (req, res) => {
     });
   }
 
-  res.render('shared-view', {
+  res.render('share/shared-view', {
     sharedId: uuid,
     folder: currentFolder,
     subfolders,
