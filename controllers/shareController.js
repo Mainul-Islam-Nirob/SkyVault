@@ -54,9 +54,35 @@ exports.generateShareLink = async (req, res) => {
   });
 };
 
+
 // Public view of shared folder
+// exports.viewSharedFolder = async (req, res) => {
+//   const { uuid } = req.params;
+
+//   const shared = await prisma.sharedFolder.findUnique({
+//     where: { id: uuid },
+//     include: { folder: true },
+//   });
+
+//   if (!shared || new Date() > shared.expiresAt) {
+//     return res.status(404).render('error', { message: 'Link expired or invalid.' });
+//   }
+
+//   const files = await prisma.file.findMany({
+//     where: { folderId: shared.folderId },
+//   });
+
+//   res.render('shared-folder', {
+//     folder: shared.folder,
+//     files,
+//     expiresAt: shared.expiresAt,
+//   });
+// };
+
+
 exports.viewSharedFolder = async (req, res) => {
   const { uuid } = req.params;
+  const folderId = req.query.folder || null;
 
   const shared = await prisma.sharedFolder.findUnique({
     where: { id: uuid },
@@ -67,13 +93,56 @@ exports.viewSharedFolder = async (req, res) => {
     return res.status(404).render('error', { message: 'Link expired or invalid.' });
   }
 
-  const files = await prisma.file.findMany({
-    where: { folderId: shared.folderId },
+  // Determine which folder to show
+  const currentFolder = folderId
+    ? await prisma.folder.findUnique({ where: { id: folderId } })
+    : shared.folder;
+
+  if (!currentFolder) {
+    return res.status(404).render('error', { message: 'Folder not found.' });
+  }
+
+  // Validate that currentFolder is a descendant of shared.folder
+  let isValid = false;
+  let temp = currentFolder;
+  while (temp) {
+    if (temp.id === shared.folderId) {
+      isValid = true;
+      break;
+    }
+    temp = await prisma.folder.findUnique({
+      where: { id: temp.parentId || '' },
+    });
+  }
+
+  if (!isValid) {
+    return res.status(403).render('error', { message: 'Access denied to this folder.' });
+  }
+
+  const subfolders = await prisma.folder.findMany({
+    where: { parentId: currentFolder.id },
   });
 
+  const files = await prisma.file.findMany({
+    where: { folderId: currentFolder.id },
+  });
+
+  // Build breadcrumbs
+  const breadcrumbs = [];
+  let node = currentFolder;
+  while (node) {
+    breadcrumbs.unshift(node);
+    node = await prisma.folder.findUnique({
+      where: { id: node.parentId || '' },
+    });
+  }
+
   res.render('shared-folder', {
-    folder: shared.folder,
+    sharedId: uuid,
+    folder: currentFolder,
+    subfolders,
     files,
+    breadcrumbs,
     expiresAt: shared.expiresAt,
   });
 };
