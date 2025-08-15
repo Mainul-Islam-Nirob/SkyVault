@@ -3,14 +3,14 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql" 
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id       String   @id @default(cuid())
+  id       String    @id @default(cuid())
   name     String
-  email    String   @unique
+  email    String    @unique
   password String
   folders  Folder[]
   files    File[]
@@ -18,41 +18,49 @@ model User {
 }
 
 model Folder {
-  id         String    @id @default(cuid())
-  name       String
-  user       User      @relation(fields: [userId], references: [id])
-  userId     String
-  parent     Folder?   @relation("FolderHierarchy", fields: [parentId], references: [id])
-  parentId   String? 
-  subfolders Folder[]  @relation("FolderHierarchy")
-  files      File[]
-  createdAt  DateTime  @default(now())
+  id          String         @id @default(cuid())
+  name        String
+  user        User           @relation(fields: [userId], references: [id])
+  userId      String
+  parent      Folder?        @relation("FolderHierarchy", fields: [parentId], references: [id])
+  parentId    String?
+  subfolders  Folder[]       @relation("FolderHierarchy")
+  files       File[]
+  sharedLinks SharedFolder[]
+  createdAt   DateTime       @default(now())
 }
 
-
 model File {
-  id         String   @id @default(cuid())
-  name       String
-  size       Int
-  url        String
+  id                 String   @id @default(cuid())
+  name               String
+  size               Int
+  url                String
   cloudinaryPublicId String?
-  uploadedAt DateTime @default(now())
-  folder     Folder?  @relation(fields: [folderId], references: [id])
-  folderId   String?
-  user       User     @relation(fields: [userId], references: [id])
-  userId     String
+  uploadedAt         DateTime @default(now())
+  folder             Folder?  @relation(fields: [folderId], references: [id])
+  folderId           String?
+  user               User     @relation(fields: [userId], references: [id])
+  userId             String
 }
 
 model Session {
-  id          String   @id @default(cuid())
-  sid         String   @unique
-  data        String
-  expiresAt   DateTime
-  user        User?    @relation(fields: [userId], references: [id])
-  userId      String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(cuid())
+  sid       String   @unique
+  data      String
+  expiresAt DateTime
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([sid])
   @@index([userId])
+}
+
+model SharedFolder {
+  id        String   @id @default(uuid())
+  folderId  String
+  folder    Folder   @relation(fields: [folderId], references: [id])
+  expiresAt DateTime
+  createdAt DateTime @default(now())
 }

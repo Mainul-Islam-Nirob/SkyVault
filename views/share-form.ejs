@@ -1,0 +1,60 @@
+<% layout('layout') -%>
+
+<div class="bg-darkSlate text-white rounded-xl shadow-lg p-6 max-w-md mx-auto mt-8 border border-black-600">
+  <h2 class="text-xl font-semibold mb-4">Share Folder: <%= folder.name %></h2>
+
+  <form action="/folders/<%= folder.id %>/share" method="POST" class="space-y-4">
+    <div>
+      <label for="duration" class="block mb-1 font-medium text-gray-300">Link Validity:</label>
+      <select
+        name="duration"
+        id="duration"
+        class="bg-black-800 text-black p-2 rounded w-full border border-black-600 focus:outline-none focus:ring-2 focus:ring-neonTeal"
+      >
+        <option value="1">1 day</option>
+        <option value="2">2 days</option>
+        <option value="7">7 days</option>
+        <option value="30">30 days</option>
+      </select>
+    </div>
+
+    <button
+      type="submit"
+      class="w-full bg-neonTeal text-black font-semibold py-2 rounded hover:bg-lightGray transition"
+    >
+      Generate Shareable Link
+    </button>
+  </form>
+
+  <% if (sharedLink) { %>
+    <div class="mt-6 bg-black-700 p-4 rounded border border-black-600">
+      <label class="block mb-2 text-sm font-medium text-gray-300">
+        Shareable link (expires <%= new Date(sharedLink.expiresAt).toLocaleDateString() %>):
+      </label>
+      <div class="flex items-center space-x-2">
+        <input
+          id="shareLinkInput"
+          type="text"
+          value="<%= `${req.protocol}://${req.get('host')}/share/${sharedLink.id}` %>"
+          readonly
+          class="bg-black-800 text-black px-3 py-2 rounded w-full text-sm border border-black-600 focus:outline-none focus:ring-2 focus:ring-neonTeal"
+        />
+        <button
+          onclick="copyLink()"
+          class="bg-neonTeal text-black px-3 py-2 rounded hover:bg-lightGray transition font-semibold"
+        >
+          Copy
+        </button>
+      </div>
+    </div>
+  <% } %>
+</div>
+
+<script>
+  function copyLink() {
+    const input = document.getElementById('shareLinkInput');
+    navigator.clipboard.writeText(input.value).then(() => {
+      alert('Link copied to clipboard!');
+    });
+  }
+</script>

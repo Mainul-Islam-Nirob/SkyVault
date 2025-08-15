@@ -1,0 +1,65 @@
+<% layout('layout') -%>
+<div class="max-w-3xl mx-auto py-10 px-6">
+  <h1 class="text-3xl font-bold mb-4">Shared Folder: <%= folder.name %></h1>
+
+  <% if (expiresAt) { %>
+    <div class="mb-6">
+      <p class="text-sm text-gray-500">Link expires on: <%= new Date(expiresAt).toLocaleDateString() %></p>
+      <div class="flex items-center gap-2 mt-2">
+        <input
+          type="text"
+          id="shareLink"
+          value="<%= `${req.protocol}://${req.get('host')}/share/${folder.id}` %>"
+          readonly
+          class="border px-3 py-2 rounded w-full text-sm"
+        />
+        <button
+          onclick="copyLink()"
+          class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm"
+        >
+          Copy
+        </button>
+      </div>
+    </div>
+  <% } else { %>
+    <form method="POST" action="/folders/<%= folder.id %>/share" class="mb-6">
+      <label for="duration" class="block text-sm font-medium text-gray-700 mb-1">Share Duration (days)</label>
+      <select name="duration" id="duration" class="border rounded px-3 py-2 text-sm w-full mb-3">
+        <option value="1">1 Day</option>
+        <option value="3">3 Days</option>
+        <option value="7" selected>7 Days</option>
+        <option value="30">30 Days</option>
+      </select>
+      <button
+        type="submit"
+        class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 text-sm"
+      >
+        Generate Share Link
+      </button>
+    </form>
+  <% } %>
+
+  <h2 class="text-xl font-semibold mb-3">Files in Folder</h2>
+  <% if (files.length === 0) { %>
+    <p class="text-gray-400">No files in this folder.</p>
+  <% } else { %>
+    <ul class="space-y-2">
+      <% files.forEach(file => { %>
+        <li class="border px-4 py-2 rounded text-sm flex justify-between items-center">
+          <span><%= file.name %></span>
+          <a href="/download/<%= file.id %>" class="text-blue-600 hover:underline">Download</a>
+        </li>
+      <% }) %>
+    </ul>
+  <% } %>
+</div>
+
+<script>
+  function copyLink() {
+    const input = document.getElementById('shareLink');
+    input.select();
+    input.setSelectionRange(0, 99999); // for mobile
+    navigator.clipboard.writeText(input.value);
+    alert('Link copied to clipboard!');
+  }
+</script>

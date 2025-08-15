@@ -34,7 +34,11 @@
             <form action="/folders/<%= folder.id %>/delete" method="POST" onsubmit="return confirm('Are you sure?');">
               <button type="submit" class="text-red-500 hover:text-red-700"> <i class="ti ti-trash"></i>  Delete</button>
             </form>
-            <a href="#" class="text-yellow-400 hover:text-yellow-200"> <i class="ti ti-link"></i>  Share</a>
+            <!-- <a href="#" class="text-yellow-400 hover:text-yellow-200"> <i class="ti ti-link"></i>  Share</a> -->
+             <a href="/folders/<%= folder.id %>/share" class="text-yellow-400 hover:text-yellow-200">
+  <i class="ti ti-link"></i> Share
+</a>
+            
           </div>
         </div>
       <% }) %>

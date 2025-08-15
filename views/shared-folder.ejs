@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Shared Folder</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white min-h-screen p-6">
+
+  <h1 class="text-3xl font-bold mb-4">Shared Folder: <%= folder.name %></h1>
+  <p class="text-sm text-gray-400 mb-6">Link expires on: <%= new Date(expiresAt).toLocaleDateString() %></p>
+
+  <% if (files.length === 0) { %>
+    <p class="text-mutedText text-lg">No files in this folder.</p>
+  <% } else { %>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <% files.forEach(file => { %>
+        <div class="bg-gray-800 p-4 rounded-xl shadow flex flex-col justify-between">
+          <p class="text-lg font-medium truncate"><%= file.name %></p>
+          <p class="text-sm text-gray-400 mb-3"><%= Math.round(file.size / 1024) %> KB</p>
+
+          <div class="w-full h-64 bg-gray-700 rounded overflow-hidden mb-4">
+            <% if (file.url.endsWith('.jpg') || file.url.endsWith('.jpeg') || file.url.endsWith('.png') || file.url.endsWith('.webp')) { %>
+              <img src="<%= file.url %>" alt="<%= file.name %>" class="w-full h-full object-cover" />
+            <% } else if (file.url.endsWith('.pdf')) { %>
+              <iframe src="<%= file.url %>" class="w-full h-full" title="PDF Preview"></iframe>
+            <% } else if (file.url.endsWith('.mp4')) { %>
+              <video controls class="w-full h-full object-cover">
+                <source src="<%= file.url %>" type="video/mp4">
+              </video>
+            <% } else { %>
+              <div class="flex items-center justify-center h-full text-center px-4">
+                <a href="<%= file.url %>" target="_blank" class="text-blue-400 hover:underline">
+                  Open <%= file.name %>
+                </a>
+              </div>
+            <% } %>
+          </div>
+
+          <a href="/files/<%= file.id %>/download" class="bg-neonTeal text-black px-3 py-1 rounded hover:bg-lightGray transition text-sm" download>
+            <i class="ti ti-download"></i> Download
+          </a>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+
+</body>
+</html>

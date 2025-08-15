@@ -15,6 +15,9 @@ const authRoutes = require('./routes/auth');
 const dashboardRoutes = require('./routes/dashboard');
 const folderRoutes = require('./routes/folders');
 const fileRoutes = require('./routes/files');
+const shareRoutes = require('./routes/share');
+
+
 
 const app = express();
 const prisma = new PrismaClient();
@@ -70,6 +73,7 @@ app.use(authRoutes);
 app.use(dashboardRoutes); 
 app.use('/folders', folderRoutes);
 app.use('/files', fileRoutes);
+app.use(shareRoutes);
 
 // START
 app.listen(3000, () => {
