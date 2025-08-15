@@ -55,31 +55,6 @@ exports.generateShareLink = async (req, res) => {
 };
 
 
-// Public view of shared folder
-// exports.viewSharedFolder = async (req, res) => {
-//   const { uuid } = req.params;
-
-//   const shared = await prisma.sharedFolder.findUnique({
-//     where: { id: uuid },
-//     include: { folder: true },
-//   });
-
-//   if (!shared || new Date() > shared.expiresAt) {
-//     return res.status(404).render('error', { message: 'Link expired or invalid.' });
-//   }
-
-//   const files = await prisma.file.findMany({
-//     where: { folderId: shared.folderId },
-//   });
-
-//   res.render('shared-folder', {
-//     folder: shared.folder,
-//     files,
-//     expiresAt: shared.expiresAt,
-//   });
-// };
-
-
 exports.viewSharedFolder = async (req, res) => {
   const { uuid } = req.params;
   const folderId = req.query.folder || null;
@@ -137,7 +112,7 @@ exports.viewSharedFolder = async (req, res) => {
     });
   }
 
-  res.render('shared-folder', {
+  res.render('shared-view', {
     sharedId: uuid,
     folder: currentFolder,
     subfolders,

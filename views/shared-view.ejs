@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Shared Folder</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+  <!-- Custom styles -->
+  <style>
+    /* Colors */
+    .text-neonTeal { color: #00e0b6; }
+    .bg-neonTeal { background-color: #00e0b6; }
+    .hover-bg-lightGray:hover { background-color: #f3f4f6; }
+    .shadow-glowCyan { box-shadow: 0 0 12px #00e0b6; }
+
+    /* Breadcrumb links */
+    .breadcrumb-link {
+      background-color: transparent;
+      padding: 6px 12px;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: #ccc;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+    .breadcrumb-link:hover {
+      color: #00e0b6;
+    }
+
+    /* Folder card */
+    .folder-card {
+      border-radius: 0.75rem;
+      padding: 1rem;
+      background-color: transparent;
+      border: 1px solid #ccc;
+      transition: all 0.3s ease;
+      display: block;
+      text-decoration: none;
+    }
+    .folder-card:hover {
+      border-color: #00e0b6;
+      box-shadow: 0 0 12px #00e0b6;
+    }
+
+    /* Download button */
+    .download-btn {
+      background-color: #00e0b6;
+      color: black;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: background-color 0.3s ease;
+      text-decoration: none;
+    }
+    .download-btn:hover {
+      background-color: #f3f4f6;
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen p-6">
+
+<div class="max-w-6xl mx-auto mt-10 text-white px-4">
+  <!-- Title -->
+  <div class="text-center mb-8">
+    <h1 class="text-3xl font-bold text-neonTeal mb-2">Viewing Shared Folder</h1>
+    <p class="text-sm text-gray-400">Link expires on <%= new Date(expiresAt).toLocaleDateString() %></p>
+  </div>
+
+  <!-- Breadcrumbs -->
+  <nav class="mb-8">
+    <ul class="flex flex-wrap items-center gap-2 justify-center">
+      <% breadcrumbs.forEach((crumb, index) => { %>
+        <li>
+          <% if (index < breadcrumbs.length - 1) { %>
+            <a href="/share/<%= sharedId %>?folder=<%= crumb.id %>" class="breadcrumb-link">
+              <%= crumb.name %>
+            </a>
+            <span class="text-gray-500 mx-1">›</span>
+          <% } else { %>
+            <span class="bg-black-800 px-3 py-1 rounded-full text-sm text-white font-semibold"><%= crumb.name %></span>
+          <% } %>
+        </li>
+      <% }) %>
+    </ul>
+  </nav>
+
+  <!-- Subfolders -->
+  <% if (subfolders.length > 0) { %>
+    <h2 class="text-xl font-semibold mb-4">Subfolders</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+      <% subfolders.forEach(folder => { %>
+        <a href="/share/<%= sharedId %>?folder=<%= folder.id %>" class="folder-card">
+          <div class="flex items-center gap-3">
+            <i class="ti ti-folder text-neonTeal text-2xl"></i>
+            <div>
+              <p class="text-lg font-semibold text-white"><%= folder.name %></p>
+              <p class="text-sm text-gray-400">Updated: <%= new Date(folder.createdAt).toLocaleDateString() %></p>
+            </div>
+          </div>
+        </a>
+      <% }) %>
+    </div>
+  <% } %>
+
+  <!-- Files -->
+  <% if (files.length > 0) { %>
+    <h2 class="text-xl font-semibold mb-4">Files</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <% files.forEach(file => { %>
+        <div class="bg-black-800 p-4 rounded-xl shadow flex flex-col justify-between border border-black-600 hover:border-neonTeal transition">
+          <div>
+            <p class="text-white font-medium truncate"><%= file.name %></p>
+            <p class="text-sm text-gray-400 mb-2"><%= Math.round(file.size / 1024) %> KB</p>
+
+            <% if (file.url.endsWith('.jpg') || file.url.endsWith('.png') || file.url.endsWith('.webp')) { %>
+              <img src="<%= file.url %>" alt="<%= file.name %>" class="w-full h-48 object-cover rounded mb-2" />
+            <% } else if (file.url.endsWith('.pdf')) { %>
+              <iframe src="<%= file.url %>" class="w-full h-48 rounded mb-2" title="PDF Preview"></iframe>
+            <% } else if (file.url.endsWith('.mp4')) { %>
+              <video controls class="w-full h-48 rounded mb-2">
+                <source src="<%= file.url %>" type="video/mp4">
+              </video>
+            <% } else { %>
+              <a href="<%= file.url %>" target="_blank" class="text-blue-400 hover:text-neonTeal block mb-2">Open File</a>
+            <% } %>
+          </div>
+
+          <!-- Download Button -->
+          <a href="/files/<%= file.id %>/download" class="download-btn" download>
+            <i class="ti ti-download"></i> Download
+          </a>
+        </div>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <p class="text-gray-400 text-sm">No files in this folder.</p>
+  <% } %>
+</div>
+
+</body>
+</html>
