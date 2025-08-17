@@ -28,7 +28,7 @@
           <a href="/folders/<%= folder.id %>" class="block text-xl font-semibold text-neonTeal mb-2 relative overflow-hidden before:absolute before:bottom-0 before:left-0 before:h-1 before:w-0 before:bg-neonTeal before:transition-all before:duration-300 hover:before:w-full hover:text-white">
                <i class="ti ti-folder text-white text-xxxl"></i> <%= folder.name %>
           </a>
-          <p class="text-mutedText text-sm mb-4">Updated: <%= new Date(folder.createdAt).toLocaleDateString() %></p>
+          <p class="text-mutedText text-sm mb-4"> Created: <%= new Date(folder.createdAt).toLocaleDateString() %></p>
           <div class="flex gap-3 text-sm">
             <a href="/folders/<%= folder.id %>/rename" class="text-accent hover:text-neonTeal">   <i class="ti ti-edit"></i> Rename</a>
             <form action="/folders/<%= folder.id %>/delete" method="POST" onsubmit="return confirm('Are you sure?');">
