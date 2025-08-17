@@ -60,7 +60,7 @@ model Session {
 model SharedFolder {
   id        String   @id @default(uuid())
   folderId  String
-  folder    Folder   @relation(fields: [folderId], references: [id])
+  folder    Folder   @relation(fields: [folderId], references: [id], onDelete: Cascade)
   expiresAt DateTime
   createdAt DateTime @default(now())
 }

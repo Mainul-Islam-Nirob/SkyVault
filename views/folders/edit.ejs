@@ -2,7 +2,7 @@
 
 <section class="max-w-md mx-auto mt-16 bg-midnightNavy p-8 rounded-2xl shadow-glowCyan">
   <h2 class="text-3xl font-extrabold mb-6 text-neonTeal">Rename Folder</h2>
-  <form action="/folders/<%= folder.id %>" method="POST" class="space-y-6">
+  <form action="/folders/<%= parentId ? `${parentId}/${folder.id}` : `${folder.id}` %>/rename" method="POST" class="space-y-6">
     <input
       type="text"
       name="name"

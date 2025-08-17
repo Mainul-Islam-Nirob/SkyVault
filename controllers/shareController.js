@@ -20,7 +20,7 @@ exports.showShareForm = async (req, res) => {
     where: { folderId: id },
   });
 
-  res.render('share-form', {
+  res.render('share/share-form', {
     folder,
     files,
     expiresAt: shared?.expiresAt || null,

@@ -24,11 +24,25 @@ router.get('/:id/new-folder', isAuth, folderController.showNestedForm);
 router.post('/:id/new-folder', isAuth, folderController.createNestedFolder);
 
 // Edit and update a folder
-router.get('/:id/edit', isAuth, folderController.showEditForm);
-router.post('/:id', isAuth, folderController.updateFolder);
+router.get('/:id/rename', isAuth, folderController.showEditForm);
+// router.post('/:id', isAuth, folderController.updateFolder);
+// Rename folder (with or without parent)
+// router.post('/:parentId?/:id/rename', isAuth, folderController.updateFolder);
+// Rename folder from root
+router.post('/:id/rename', isAuth, folderController.updateFolder);
+
+// Rename folder from inside a parent
+router.post('/:parentId/:id/rename', isAuth, folderController.updateFolder);
+// Delete folder (with or without parent)
+// router.post('/:parentId?/:id/delete', isAuth, folderController.deleteFolder);
+// Delete folder from root
+router.post('/:id/delete', isAuth, folderController.deleteFolder);
+
+// Delete folder from inside a parent
+router.post('/:parentId/:id/delete', isAuth, folderController.deleteFolder);
 
 // Delete a folder
-router.post('/:id/delete', isAuth, folderController.deleteFolder);
+// router.post('/:id/delete', isAuth, folderController.deleteFolder);
 
 // View a specific folder and its contents
 router.get('/:id', isAuth, folderController.viewFolder);

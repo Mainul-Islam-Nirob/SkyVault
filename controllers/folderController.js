@@ -44,23 +44,34 @@ exports.createFolder = async (req, res) => {
 };
 
 exports.showEditForm = async (req, res) => {
-  const folder = await prisma.folder.findUnique({
-    where: { id: req.params.id }
+  const { id } = req.params;
+
+  const folder = await prisma.folder.findUnique({ where: { id } });
+
+  if (!folder || folder.userId !== req.user.id) {
+    return res.status(403).send('Forbidden');
+  }
+
+  const parentId = folder.parentId || null;
+
+  res.render('folders/edit', {
+    folder,
+    parentId
   });
-  if (!folder || folder.userId !== req.user.id) return res.status(403).send('Forbidden');
-  res.render('folders/edit', { folder });
 };
 
 exports.updateFolder = async (req, res) => {
   const { name } = req.body;
-  const folder = await prisma.folder.findUnique({ where: { id: req.params.id } });
+  const { id, parentId } = req.params;
+
+  const folder = await prisma.folder.findUnique({ where: { id } });
   if (!folder || folder.userId !== req.user.id) return res.status(403).send('Forbidden');
 
   await prisma.folder.update({
-    where: { id: req.params.id },
+    where: { id },
     data: { name }
   });
-  res.redirect('/folders');
+  res.redirect(parentId ? `/folders/${parentId}` : '/folders');
 };
 
 async function deleteFolderRecursive(folderId, userId) {
@@ -82,8 +93,10 @@ async function deleteFolderRecursive(folderId, userId) {
   });
 }
 
+
 exports.deleteFolder = async (req, res) => {
   const folderId = req.params.id;
+  let parentId = req.params.parentId;
 
   if (!folderId || typeof folderId !== 'string') {
     return res.status(400).send('Invalid folder ID');
@@ -91,15 +104,22 @@ exports.deleteFolder = async (req, res) => {
 
   try {
     const folder = await prisma.folder.findUnique({
-      where: { id: folderId } 
+      where: { id: folderId },
+      select: { userId: true, parentId: true }
     });
 
     if (!folder || folder.userId !== req.user.id) {
       return res.status(403).send('Forbidden');
     }
 
+    if (!parentId) {
+      parentId = folder.parentId;
+    }
+
     await deleteFolderRecursive(folderId, req.user.id);
-    res.redirect('/folders');
+
+    const redirectUrl = parentId ? `/folders/${parentId}` : '/folders';
+    res.redirect(redirectUrl);
   } catch (err) {
     console.error('Error deleting folder:', err);
     res.status(500).send('Internal Server Error');

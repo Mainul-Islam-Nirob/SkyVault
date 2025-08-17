@@ -30,7 +30,7 @@
           </a>
           <p class="text-mutedText text-sm mb-4">Updated: <%= new Date(folder.createdAt).toLocaleDateString() %></p>
           <div class="flex gap-3 text-sm">
-            <a href="/folders/<%= folder.id %>/edit" class="text-accent hover:text-neonTeal">   <i class="ti ti-edit"></i> Rename</a>
+            <a href="/folders/<%= folder.id %>/rename" class="text-accent hover:text-neonTeal">   <i class="ti ti-edit"></i> Rename</a>
             <form action="/folders/<%= folder.id %>/delete" method="POST" onsubmit="return confirm('Are you sure?');">
               <button type="submit" class="text-red-500 hover:text-red-700"> <i class="ti ti-trash"></i>  Delete</button>
             </form>
