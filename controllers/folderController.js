@@ -27,6 +27,7 @@ exports.listFolders = async (req, res) => {
     folders: folders,
     subfolders: [], 
     files: files,
+    breadcrumb: [],
     user: req.user
   });
 };
@@ -145,25 +146,47 @@ exports.createNestedFolder = async (req, res) => {
   res.redirect(`/folders/${parentId}`);
 };
 
+
+async function buildBreadcrumb(folderId) {
+  const path = [];
+  let currentId = folderId;
+
+  while (currentId) {
+    const folder = await prisma.folder.findUnique({
+      where: { id: currentId },
+      select: { id: true, name: true, parentId: true }
+    });
+
+    if (!folder) break;
+    path.unshift(folder);
+    currentId = folder.parentId;
+  }
+
+  return path;
+}
+
 exports.viewFolder = async (req, res) => {
+  const folderId = req.params.id;
+
   const folder = await prisma.folder.findUnique({
-    where: { id: req.params.id },
+    where: { id: folderId },
     include: {
       files: true,
-      subfolders: {
-        include: { files: true }
-      }
+      subfolders: { include: { files: true } }
     }
   });
 
   if (!folder || folder.userId !== req.user.id) return res.status(403).send('Forbidden');
 
+  const breadcrumb = await buildBreadcrumb(folderId);
+
   res.render('dashboard', {
     currentFolder: folder,
-    folders: [], 
+    folders: [],
     subfolders: folder.subfolders,
     files: folder.files,
-    user: req.user
+    user: req.user,
+    breadcrumb
   });
 };
 

@@ -19,9 +19,23 @@
 </h1>
 
   <% const folderList = currentFolder ? subfolders : folders; %>
+   <% if (breadcrumb && breadcrumb.length > 0) { %>
+    <nav class="text-sm text-mutedText mb-6 flex flex-wrap items-center gap-2">
+      <a href="/folders" class="hover:text-neonTeal font-semibold">Home</a>
+      <% breadcrumb.forEach((folder, index) => { %>
+        <span>/</span>
+        <% if (index === breadcrumb.length - 1) { %>
+          <span class="text-white font-bold"><%= folder.name %></span>
+        <% } else { %>
+          <a href="/folders/<%= folder.id %>" class="hover:text-neonTeal"><%= folder.name %></a>
+        <% } %>
+      <% }) %>
+    </nav>
+  <% } %>
   <% if (folderList.length === 0) { %>
     <p class="text-mutedText text-lg mb-12">No folders found. Start by creating one.</p>
   <% } else { %>
+
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
       <% folderList.forEach(folder => { %>
         <div class="bg-darkSlate p-4 rounded-xl shadow hover:shadow-glowCyan transition">
